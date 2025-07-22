@@ -4,6 +4,8 @@ import Header from './components/Header';
 import StudentRegistration from './pages/StudentRegistration';
 import AdminLogin from './pages/AdminLogin';
 import AdminDashboard from './pages/AdminDashboard';
+import SimpleCertificateGenerator from './pages/SimpleCertificateGenerator';
+
 
 function App() {
   return (
@@ -22,10 +24,11 @@ function App() {
             <StudentRegistration />
           </div>
         } />
-        
+
         {/* Admin routes without public header */}
         <Route path="/admin/login" element={<AdminLogin />} />
         <Route path="/admin/dashboard" element={<AdminDashboard />} />
+        <Route path="/certificate/simple" element={<SimpleCertificateGenerator />} />
       </Routes>
     </Router>
   );
