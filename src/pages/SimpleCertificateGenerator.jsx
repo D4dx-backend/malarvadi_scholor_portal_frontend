@@ -4,12 +4,48 @@ function CertificateGenerator() {
   const [name, setName] = useState('');
   const [place, setPlace] = useState('');
   const [school, setSchool] = useState('');
+  const [age, setAge] = useState('');
+  const [gender, setGender] = useState('');
+  const [className, setClassName] = useState('');
+  const [district, setDistrict] = useState('');
+  const [mobileNumber, setMobileNumber] = useState('');
   const [photo, setPhoto] = useState(null);
   const [preview, setPreview] = useState(null);
   const [isGenerating, setIsGenerating] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const fileInputRef = useRef(null);
+  
+  // Kerala districts
+  const keralaDistricts = [
+    'Alappuzha',
+    'Ernakulam',
+    'Idukki',
+    'Kannur',
+    'Kasaragod',
+    'Kollam',
+    'Kottayam',
+    'Kozhikode',
+    'Malappuram',
+    'Palakkad',
+    'Pathanamthitta',
+    'Thiruvananthapuram',
+    'Thrissur',
+    'Wayanad'
+  ];
+  
+  // Class options up to 7th standard
+  const classOptions = [
+    'LKG',
+    'UKG',
+    '1st Standard',
+    '2nd Standard',
+    '3rd Standard',
+    '4th Standard',
+    '5th Standard',
+    '6th Standard',
+    '7th Standard'
+  ];
 
   const handlePhotoChange = (e) => {
     const file = e.target.files[0];
@@ -50,6 +86,31 @@ function CertificateGenerator() {
       setError('Please enter your school/institution');
       return;
     }
+    
+    if (!age || isNaN(age) || parseInt(age) < 5 || parseInt(age) > 16) {
+      setError('Please enter a valid age between 5 and 16');
+      return;
+    }
+    
+    if (!gender || !['male', 'female'].includes(gender)) {
+      setError('Please select a gender');
+      return;
+    }
+    
+    if (!className.trim()) {
+      setError('Please enter your class');
+      return;
+    }
+    
+    if (!district.trim()) {
+      setError('Please enter your district');
+      return;
+    }
+    
+    if (!mobileNumber.trim() || !/^[6-9]\d{9}$/.test(mobileNumber)) {
+      setError('Please enter a valid 10-digit mobile number');
+      return;
+    }
 
     setIsGenerating(true);
     setError('');
@@ -60,12 +121,17 @@ function CertificateGenerator() {
       formData.append('name', name);
       formData.append('place', place);
       formData.append('school', school);
+      formData.append('age', age);
+      formData.append('gender', gender);
+      formData.append('className', className);
+      formData.append('district', district);
+      formData.append('mobileNumber', mobileNumber);
       if (photo) {
         formData.append('photo', photo);
       }
       // IMPORTANT: Use port 4000 for the API endpoint
-      const API_URL = 'http://localhost:4000/api';
-      const response = await fetch(`${API_URL}/certificates/generate-certificate`, {
+      const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+      const response = await fetch(`${API_BASE_URL}/certificates/generate-certificate`, {
         method: 'POST',
         body: formData,
       });
@@ -93,6 +159,11 @@ function CertificateGenerator() {
         setName('');
         setPlace('');
         setSchool('');
+        setAge('');
+        setGender('');
+        setClassName('');
+        setDistrict('');
+        setMobileNumber('');
         setPhoto(null);
         setPreview(null);
       }, 2000); // 2 second delay before resetting form
@@ -154,6 +225,95 @@ function CertificateGenerator() {
               required
             />
           </div>
+          
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Age <span className="text-red-500">*</span>
+              </label>
+              <input
+                type="number"
+                value={age}
+                onChange={(e) => setAge(e.target.value)}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                placeholder="Age (5-16)"
+                min="5"
+                max="16"
+                required
+              />
+            </div>
+            
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Gender <span className="text-red-500">*</span>
+              </label>
+              <select
+                value={gender}
+                onChange={(e) => setGender(e.target.value)}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                required
+              >
+                <option value="">Select Gender</option>
+                <option value="male">Male</option>
+                <option value="female">Female</option>
+              </select>
+            </div>
+          </div>
+          
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Class <span className="text-red-500">*</span>
+              </label>
+              <select
+                value={className}
+                onChange={(e) => setClassName(e.target.value)}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                required
+              >
+                <option value="">Select Class</option>
+                {classOptions.map((option) => (
+                  <option key={option} value={option}>
+                    {option}
+                  </option>
+                ))}
+              </select>
+            </div>
+            
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                District <span className="text-red-500">*</span>
+              </label>
+              <select
+                value={district}
+                onChange={(e) => setDistrict(e.target.value)}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                required
+              >
+                <option value="">Select District</option>
+                {keralaDistricts.map((dist) => (
+                  <option key={dist} value={dist}>
+                    {dist}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
+          
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Mobile Number <span className="text-red-500">*</span>
+            </label>
+            <input
+              type="tel"
+              value={mobileNumber}
+              onChange={(e) => setMobileNumber(e.target.value)}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+              placeholder="10-digit mobile number"
+              pattern="[6-9][0-9]{9}"
+              required
+            />
+          </div>
 
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -211,8 +371,8 @@ function CertificateGenerator() {
 
           <button
             onClick={handleGenerateCertificate}
-            disabled={isGenerating || !name.trim() || !place.trim() || !school.trim() || !photo}
-            className={`w-full py-3 px-4 rounded-md text-white font-medium ${isGenerating || !name.trim() || !place.trim() || !school.trim() || !photo
+            disabled={isGenerating || !name.trim() || !place.trim() || !school.trim() || !age || !gender || !className.trim() || !district.trim() || !mobileNumber.trim() || !photo}
+            className={`w-full py-3 px-4 rounded-md text-white font-medium ${isGenerating || !name.trim() || !place.trim() || !school.trim() || !age || !gender || !className.trim() || !district.trim() || !mobileNumber.trim() || !photo
               ? 'bg-green-400 cursor-not-allowed'
               : 'bg-green-600 hover:bg-green-700'
               }`}
