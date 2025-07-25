@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
@@ -7,11 +8,26 @@ const AdminLogin = () => {
   const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
   const navigate = useNavigate();
 
+  // Form state
   const [formData, setFormData] = useState({
-    username: '',
-    password: ''
+    district: '',
+    area: '',
+    unit: '',
+    areaCode: ''
   });
+
+  // Data state
+  const [districts, setDistricts] = useState([]);
+  const [areas, setAreas] = useState([]);
+  const [units, setUnits] = useState([]);
+
+  // UI state
   const [loading, setLoading] = useState(false);
+  const [dataLoading, setDataLoading] = useState({
+    districts: false,
+    areas: false,
+    units: false
+  });
   const [error, setError] = useState('');
 
   // Check if admin is already logged in
@@ -19,6 +35,9 @@ const AdminLogin = () => {
     const token = localStorage.getItem('adminToken');
     if (token) {
       verifyToken(token);
+    } else {
+      // Load districts on component mount
+      fetchDistricts();
     }
   }, []);
 
@@ -37,18 +56,102 @@ const AdminLogin = () => {
     } catch (error) {
       // Token is invalid, remove it
       localStorage.removeItem('adminToken');
+      fetchDistricts();
     }
   };
 
-  // Handle input changes
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
+  // Fetch districts
+  const fetchDistricts = async () => {
+    setDataLoading(prev => ({ ...prev, districts: true }));
+    try {
+      const response = await axios.get(`${API_BASE_URL}/admin/districts`);
+      if (response.data.success) {
+        setDistricts(response.data.districts);
+      }
+    } catch (error) {
+      console.error('Error fetching districts:', error);
+      setError('Failed to load districts. Please refresh the page.');
+    } finally {
+      setDataLoading(prev => ({ ...prev, districts: false }));
+    }
+  };
+
+  // Fetch areas by district
+  const fetchAreas = async (districtId) => {
+    if (!districtId) {
+      setAreas([]);
+      return;
+    }
+
+    setDataLoading(prev => ({ ...prev, areas: true }));
+    try {
+      const response = await axios.get(`${API_BASE_URL}/admin/areas/${districtId}`);
+      if (response.data.success) {
+        setAreas(response.data.areas);
+      }
+    } catch (error) {
+      console.error('Error fetching areas:', error);
+      setError('Failed to load areas for selected district.');
+    } finally {
+      setDataLoading(prev => ({ ...prev, areas: false }));
+    }
+  };
+
+  // Fetch units by area
+  const fetchUnits = async (areaId) => {
+    if (!areaId) {
+      setUnits([]);
+      return;
+    }
+
+    setDataLoading(prev => ({ ...prev, units: true }));
+    try {
+      const response = await axios.get(`${API_BASE_URL}/admin/units/${areaId}`);
+      if (response.data.success) {
+        setUnits(response.data.units);
+      }
+    } catch (error) {
+      console.error('Error fetching units:', error);
+      setError('Failed to load units for selected area.');
+    } finally {
+      setDataLoading(prev => ({ ...prev, units: false }));
+    }
+  };
+
+  // Handle dropdown changes
+  const handleSelectChange = (name, value) => {
     setFormData(prev => ({
       ...prev,
-      [name]: value
+      [name]: value,
+      // Reset dependent fields
+      ...(name === 'district' && { area: '', unit: '' }),
+      ...(name === 'area' && { unit: '' })
     }));
-    
-    // Clear error when user starts typing
+
+    // Clear error when user makes changes
+    if (error) {
+      setError('');
+    }
+
+    // Fetch dependent data
+    if (name === 'district' && value) {
+      setAreas([]);
+      setUnits([]);
+      fetchAreas(value);
+    } else if (name === 'area' && value) {
+      setUnits([]);
+      fetchUnits(value);
+    }
+  };
+
+  // Handle area code input
+  const handleAreaCodeChange = (e) => {
+    const value = e.target.value.replace(/\D/g, '').slice(0, 4); // Only numbers, max 4 digits
+    setFormData(prev => ({
+      ...prev,
+      areaCode: value
+    }));
+
     if (error) {
       setError('');
     }
@@ -58,8 +161,15 @@ const AdminLogin = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     
-    if (!formData.username || !formData.password) {
-      setError('Please enter both username and password');
+    const { district, area, unit, areaCode } = formData;
+    
+    if (!district || !area || !unit || !areaCode) {
+      setError('Please select district, area, unit and enter the area code');
+      return;
+    }
+
+    if (areaCode.length !== 4) {
+      setError('Area code must be exactly 4 digits');
       return;
     }
 
@@ -77,7 +187,7 @@ const AdminLogin = () => {
         navigate('/admin/dashboard');
       }
     } catch (error) {
-      const errorMessage = error.response?.data?.message || 'Login failed. Please try again.';
+      const errorMessage = error.response?.data?.message || 'Login failed. Please check your credentials and try again.';
       setError(errorMessage);
     } finally {
       setLoading(false);
@@ -100,13 +210,13 @@ const AdminLogin = () => {
                 strokeLinecap="round" 
                 strokeLinejoin="round" 
                 strokeWidth={2} 
-                d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" 
+                d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" 
               />
             </svg>
           </div>
-          <h2 className="text-3xl font-bold text-gray-900">Admin Login</h2>
+          <h2 className="text-3xl font-bold text-gray-900">Unit Admin Login</h2>
           <p className="mt-2 text-sm text-gray-600">
-            Sign in to access the admin dashboard
+            Select your unit and enter area code to access the dashboard
           </p>
         </div>
       </div>
@@ -131,48 +241,126 @@ const AdminLogin = () => {
 
           {/* Login Form */}
           <form onSubmit={handleSubmit} className="space-y-6">
+            {/* District Selection */}
             <div>
-              <label htmlFor="username" className="block text-sm font-medium text-gray-700">
-                Username
+              <label htmlFor="district" className="block text-sm font-medium text-gray-700">
+                District
+              </label>
+              <div className="mt-1">
+                <select
+                  id="district"
+                  name="district"
+                  value={formData.district}
+                  onChange={(e) => handleSelectChange('district', e.target.value)}
+                  className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm bg-white"
+                  required
+                  disabled={dataLoading.districts}
+                >
+                  <option value="">
+                    {dataLoading.districts ? 'Loading districts...' : 'Select District'}
+                  </option>
+                  {districts.map((district) => (
+                    <option key={district.id} value={district.id}>
+                      {district.title}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
+
+            {/* Area Selection */}
+            <div>
+              <label htmlFor="area" className="block text-sm font-medium text-gray-700">
+                Area
+              </label>
+              <div className="mt-1">
+                <select
+                  id="area"
+                  name="area"
+                  value={formData.area}
+                  onChange={(e) => handleSelectChange('area', e.target.value)}
+                  className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm bg-white"
+                  required
+                  disabled={!formData.district || dataLoading.areas}
+                >
+                  <option value="">
+                    {!formData.district 
+                      ? 'Select district first' 
+                      : dataLoading.areas 
+                        ? 'Loading areas...' 
+                        : 'Select Area'
+                    }
+                  </option>
+                  {areas.map((area) => (
+                    <option key={area.id} value={area.id}>
+                      {area.title}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
+
+            {/* Unit Selection */}
+            <div>
+              <label htmlFor="unit" className="block text-sm font-medium text-gray-700">
+                Unit
+              </label>
+              <div className="mt-1">
+                <select
+                  id="unit"
+                  name="unit"
+                  value={formData.unit}
+                  onChange={(e) => handleSelectChange('unit', e.target.value)}
+                  className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm bg-white"
+                  required
+                  disabled={!formData.area || dataLoading.units}
+                >
+                  <option value="">
+                    {!formData.area 
+                      ? 'Select area first' 
+                      : dataLoading.units 
+                        ? 'Loading units...' 
+                        : 'Select Unit'
+                    }
+                  </option>
+                  {units.map((unit) => (
+                    <option key={unit.id} value={unit.id}>
+                      {unit.title}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
+
+            {/* Area Code Input */}
+            <div>
+              <label htmlFor="areaCode" className="block text-sm font-medium text-gray-700">
+                Area Code
               </label>
               <div className="mt-1">
                 <input
-                  id="username"
-                  name="username"
+                  id="areaCode"
+                  name="areaCode"
                   type="text"
-                  autoComplete="username"
                   required
-                  value={formData.username}
-                  onChange={handleInputChange}
+                  value={formData.areaCode}
+                  onChange={handleAreaCodeChange}
+                  maxLength={4}
+                  pattern="[0-9]{4}"
                   className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                  placeholder="Enter your username"
+                  placeholder="Enter 4-digit area code"
                 />
+                <p className="mt-1 text-xs text-gray-500">
+                  Enter the 4-digit code provided for your area
+                </p>
               </div>
             </div>
 
-            <div>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-700">
-                Password
-              </label>
-              <div className="mt-1">
-                <input
-                  id="password"
-                  name="password"
-                  type="password"
-                  autoComplete="current-password"
-                  required
-                  value={formData.password}
-                  onChange={handleInputChange}
-                  className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                  placeholder="Enter your password"
-                />
-              </div>
-            </div>
-
+            {/* Submit Button */}
             <div>
               <button
                 type="submit"
-                disabled={loading}
+                disabled={loading || !formData.district || !formData.area || !formData.unit || formData.areaCode.length !== 4}
                 className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200"
               >
                 {loading ? (
@@ -192,10 +380,10 @@ const AdminLogin = () => {
                         strokeLinecap="round" 
                         strokeLinejoin="round" 
                         strokeWidth={2} 
-                        d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" 
+                        d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013 3v1" 
                       />
                     </svg>
-                    Sign in
+                    Access Dashboard
                   </div>
                 )}
               </button>
@@ -232,7 +420,7 @@ const AdminLogin = () => {
                     d="M10 19l-7-7m0 0l7-7m-7 7h18" 
                   />
                 </svg>
-                Back to Registration
+                Back to Student Registration
               </button>
             </div>
           </div>
