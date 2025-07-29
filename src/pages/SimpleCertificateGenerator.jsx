@@ -90,6 +90,11 @@ function CertificateGenerator() {
     processFile(file);
   };
 
+  const validateName = (name) => {
+    // Regular expression that checks for any digits (0-9)
+    return !/\d/.test(name);
+  };
+
   const processFile = (file) => {
     if (!file) return;
 
@@ -114,6 +119,12 @@ function CertificateGenerator() {
   };
 
   const handleGenerateCertificate = async () => {
+
+    if (!validateName(name)) {
+      setError('Name should not contain any numbers');
+      return;
+    }
+
     if (!name.trim()) {
       setError('Please enter your name');
       return;
@@ -266,7 +277,12 @@ function CertificateGenerator() {
                   <input
                     type="text"
                     value={name}
-                    onChange={(e) => setName(e.target.value)}
+                    onChange={(e) => {
+                      // Prevent entering digits
+                      if (!/\d/.test(e.target.value)) {
+                        setName(e.target.value);
+                      }
+                    }}
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
                     placeholder="Enter your full name"
                     required
@@ -280,7 +296,13 @@ function CertificateGenerator() {
                   <input
                     type="text"
                     value={place}
-                    onChange={(e) => setPlace(e.target.value)}
+                    onChange={(e) => {
+                      const value = e.target.value;
+                      // Only allow letters (A-Z, a-z) and spaces
+                      if (/^[a-zA-Z\s]*$/.test(value)) {
+                        setPlace(value);
+                      }
+                    }}
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
                     placeholder="Enter your place (e.g., Kottayam)"
                     required
@@ -294,7 +316,13 @@ function CertificateGenerator() {
                   <input
                     type="text"
                     value={school}
-                    onChange={(e) => setSchool(e.target.value)}
+                    onChange={(e) => {
+                      const value = e.target.value;
+                      // Only allow letters (A-Z, a-z) and spaces
+                      if (/^[a-zA-Z\s]*$/.test(value)) {
+                        setSchool(value);
+                      }
+                    }}
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
                     placeholder="Enter your school/institution name"
                   />

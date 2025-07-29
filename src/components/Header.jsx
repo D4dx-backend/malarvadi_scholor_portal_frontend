@@ -13,9 +13,9 @@ const Header = () => {
           <div className="flex items-center space-x-2 sm:space-x-3 min-w-0">
             <div className="flex-shrink-0">
               <div className="w-8 h-8 sm:w-10 sm:h-10">
-                <img
-                  src={logo}
-                  alt="Malarvadi Little Scholar Logo"
+                <img 
+                  src={logo} 
+                  alt="Malarvadi Little Scholar Logo" 
                   className="w-full h-full object-contain"
                 />
               </div>
@@ -37,8 +37,8 @@ const Header = () => {
               </svg>
               Certificate Generate
             </button>
-
-            <button
+            
+            <button 
               onClick={() => navigate('/admin/login')}
               className="inline-flex items-center px-3 py-2 sm:px-4 sm:py-2 border border-transparent text-xs sm:text-sm font-medium rounded-md text-white bg-gray-600 hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 transition-colors duration-200"
             >

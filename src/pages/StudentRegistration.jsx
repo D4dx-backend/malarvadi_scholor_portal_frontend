@@ -127,7 +127,7 @@ const StudentRegistration = () => {
   const handleHouseNameChange = (e) => {
     const value = e.target.value;
     // Allow letters, numbers, spaces, and common address characters
-    if (/^[a-zA-Z0-9\s\.\-',/()]*$/.test(value)) {
+    if (/^[a-zA-Z\s\.\-',/()]*$/.test(value)) {
       setFormData(prev => ({
         ...prev,
         houseName: value
@@ -143,7 +143,7 @@ const StudentRegistration = () => {
   const handleSchoolNameChange = (e) => {
     const value = e.target.value;
     // Allow letters, numbers, spaces, and common school name characters
-    if (/^[a-zA-Z0-9\s\.\-',&()]*$/.test(value)) {
+    if (/^[a-zA-Z\s\.\-',&()]*$/.test(value)) {
       setFormData(prev => ({
         ...prev,
         school: value
