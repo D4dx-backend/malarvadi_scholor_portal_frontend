@@ -1,6 +1,8 @@
 import React, { useState, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 function CertificateGenerator() {
+  const navigate = useNavigate();
   const [name, setName] = useState('');
   const [place, setPlace] = useState('');
   const [school, setSchool] = useState('');
@@ -178,8 +180,19 @@ function CertificateGenerator() {
 
   return (
     <div className="min-h-screen bg-gray-50 py-8 px-4">
-      <div className="max-w-md mx-auto bg-white rounded-lg shadow-md overflow-hidden p-6">
-        <h1 className="text-2xl font-bold text-center text-green-800 mb-6">
+      <div className="max-w-md mx-auto bg-white rounded-lg shadow-md overflow-hidden p-6 relative">
+        {/* Close Button - Top Right */}
+        <button
+          onClick={() => navigate('/')}
+          className="absolute top-4 right-4 w-8 h-8 bg-gray-100 hover:bg-gray-200 text-gray-600 hover:text-gray-800 rounded-full flex items-center justify-center transition-colors duration-200"
+          title="Return to Home"
+        >
+          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+
+        <h1 className="text-xl font-bold text-center text-green-800 mb-6">
           Malarvadi Little Scholar Certificate
         </h1>
 
@@ -394,6 +407,19 @@ function CertificateGenerator() {
           <p className="text-center text-xs text-gray-500 mt-4">
             Your certificate will be generated with the Malarvadi Little Scholar 2025 template
           </p>
+
+          {/* Return to Home Button - Bottom */}
+          <div className="mt-6 pt-4 border-t border-gray-200">
+            <button
+              onClick={() => navigate('/')}
+              className="w-full py-2 px-4 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-md transition-colors duration-200 flex items-center justify-center"
+            >
+              <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+              </svg>
+              Return to Home
+            </button>
+          </div>
         </div>
       </div>
     </div>
