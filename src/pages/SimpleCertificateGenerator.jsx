@@ -54,8 +54,23 @@ function CertificateGenerator() {
 
   const handleAgeChange = (e) => {
     const value = e.target.value;
-    // Allow typing but validate the final value
-    if (value === '' || /^\d{1,2}$/.test(value)) {
+    
+    // Allow empty input (for backspace/delete)
+    if (value === '') {
+      setAge(value);
+      return;
+    }
+  
+    // Only allow digits (0-9)
+    if (!/^\d+$/.test(value)) {
+      return; // Ignore non-digit input
+    }
+  
+    // Convert to number
+    const ageNum = parseInt(value, 10);
+  
+    // Only set if between 5 and 12
+    if (ageNum >= 5 && ageNum <= 12) {
       setAge(value);
     }
   };
@@ -135,10 +150,12 @@ function CertificateGenerator() {
       return;
     }
     
-    if (!age || isNaN(age) || parseInt(age) < 5 || parseInt(age) > 12) {
-      setError('Please enter a valid age between 5 and 12');
-      return;
-    }
+    // Validate age is between 5 and 12
+  const ageNum = parseInt(age, 10);
+  if (isNaN(ageNum) || ageNum < 5 || ageNum > 12) {
+    setError('Age must be between 5 and 12');
+    return;
+  }
     
     if (!gender || !['male', 'female'].includes(gender)) {
       setError('Please select a gender');
