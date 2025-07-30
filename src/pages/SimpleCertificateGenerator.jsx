@@ -31,6 +31,7 @@ function CertificateGenerator() {
     'Kollam',
     'Kottayam',
     'Kozhikode',
+    'Kozhikode City',
     'Malappuram',
     'Palakkad',
     'Pathanamthitta',
@@ -41,8 +42,6 @@ function CertificateGenerator() {
   
   // Class options up to 7th standard
   const classOptions = [
-    'LKG',
-    'UKG',
     '1st Standard',
     '2nd Standard',
     '3rd Standard',
@@ -66,12 +65,24 @@ function CertificateGenerator() {
       return; // Ignore non-digit input
     }
   
-    // Convert to number
+    // Allow any number to be typed
+    setAge(value);
+  };
+
+  const handleAgeBlur = (e) => {
+    const value = e.target.value;
+    
+    if (value === '') {
+      return;
+    }
+    
     const ageNum = parseInt(value, 10);
-  
-    // Only set if between 5 and 12
-    if (ageNum >= 5 && ageNum <= 12) {
-      setAge(value);
+    
+    // Adjust to valid range (5-12)
+    if (ageNum < 5) {
+      setAge('5');
+    } else if (ageNum > 12) {
+      setAge('12');
     }
   };
 
@@ -354,6 +365,7 @@ function CertificateGenerator() {
                       type="number"
                       value={age}
                       onChange={handleAgeChange}
+                      onBlur={handleAgeBlur}
                       className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
                       placeholder="Age (5-12)"
                       min="5"
@@ -373,8 +385,8 @@ function CertificateGenerator() {
                       required
                     >
                       <option value="">Select Gender</option>
-                      <option value="male">Male</option>
-                      <option value="female">Female</option>
+                      <option value="male">Boy</option>
+                      <option value="female">Girl</option>
                     </select>
                   </div>
                 </div>
