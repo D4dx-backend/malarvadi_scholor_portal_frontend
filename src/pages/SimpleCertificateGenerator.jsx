@@ -1,6 +1,7 @@
 import React, { useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import logo from '../assets/logo.png';
+import CircularCropModal from '../components/CircularCropModal';
 
 function CertificateGenerator() {
   const navigate = useNavigate();
@@ -19,6 +20,8 @@ function CertificateGenerator() {
   const [success, setSuccess] = useState('');
   const [isDragOver, setIsDragOver] = useState(false);
   const fileInputRef = useRef(null);
+  const [showCropModal, setShowCropModal] = useState(false);
+  const [rawImage, setRawImage] = useState(null);
   
   // Kerala districts with Kochi City
   const keralaDistricts = [
@@ -96,8 +99,45 @@ function CertificateGenerator() {
 
   const handlePhotoChange = (e) => {
     const file = e.target.files[0];
-    processFile(file);
+    if (!file) return;
+    if (!file.type.match('image.*')) {
+      setError('Please upload an image file (JPEG, PNG)');
+      return;
+    }
+    if (file.size > 2 * 1024 * 1024) {
+      setError('Image size should be less than 2MB');
+      return;
+    }
+    setError('');
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      setRawImage(reader.result);
+      setShowCropModal(true);
+    };
+    reader.readAsDataURL(file);
   };
+
+  const handleCropApply = (croppedDataUrl) => {
+    setPreview(croppedDataUrl);
+    setPhoto(dataURLtoFile(croppedDataUrl, 'cropped_photo.png'));
+    setShowCropModal(false);
+    setRawImage(null);
+  };
+
+  const handleCropCancel = () => {
+    setShowCropModal(false);
+    setRawImage(null);
+    setPhoto(null);
+    setPreview(null);
+    if (fileInputRef.current) fileInputRef.current.value = '';
+  };
+
+  // Helper to convert dataURL to File
+  function dataURLtoFile(dataurl, filename) {
+    const arr = dataurl.split(','), mime = arr[0].match(/:(.*?);/)[1], bstr = atob(arr[1]), n = bstr.length, u8arr = new Uint8Array(n);
+    for (let i = 0; i < n; i++) u8arr[i] = bstr.charCodeAt(i);
+    return new File([u8arr], filename, { type: mime });
+  }
 
   const handleDragOver = (e) => {
     e.preventDefault();
@@ -575,6 +615,13 @@ function CertificateGenerator() {
           </div>
         </div>
       </div>
+      {/* Crop Modal */}
+      <CircularCropModal
+        open={showCropModal}
+        imageSrc={rawImage}
+        onApply={handleCropApply}
+        onCancel={handleCropCancel}
+      />
     </div>
   );
 }
