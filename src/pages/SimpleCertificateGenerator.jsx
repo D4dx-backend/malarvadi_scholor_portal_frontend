@@ -560,7 +560,7 @@ function CertificateGenerator() {
               Your certificate will be generated with the Malarvadi Little Scholar 2025 template
             </p>
 
-            {/* Return to Home Button */}
+            {/* Return to Home Button 
             <div className="mt-6 pt-6 border-t border-gray-200">
               <button
                 onClick={() => navigate('/')}
@@ -571,7 +571,7 @@ function CertificateGenerator() {
                 </svg>
                 Return to Home
               </button>
-            </div>
+            </div>*/}
           </div>
         </div>
       </div>

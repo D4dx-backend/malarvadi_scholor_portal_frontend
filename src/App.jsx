@@ -14,8 +14,7 @@ function App() {
         {/* Public routes with header */}
         <Route path="/" element={
           <div className="min-h-screen bg-gray-50">
-            <Header />
-            <StudentRegistration />
+            <SimpleCertificateGenerator/>
           </div>
         } />
         <Route path="/register" element={
