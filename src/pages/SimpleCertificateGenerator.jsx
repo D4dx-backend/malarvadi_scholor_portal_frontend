@@ -305,11 +305,10 @@ function CertificateGenerator() {
                   <input
                     type="text"
                     value={name}
-                    onChange={(e) => {
-                      // Prevent entering digits
-                      if (!/\d/.test(e.target.value)) {
-                        setName(e.target.value);
-                      }
+                     onChange={(e) => {
+                      // Convert to uppercase and remove numbers
+                      const value = e.target.value.toUpperCase().replace(/[0-9]/g, '');
+                      setName(value);
                     }}
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
                     placeholder="Enter your full name"
