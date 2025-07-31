@@ -1,7 +1,7 @@
 import React, { useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import logo from '../assets/logo.png';
-import CircularCropModal from '../components/CircularCropModal';
+// import CircularCropModal from '../components/CircularCropModal'; // Commented out - photo upload disabled
 
 function CertificateGenerator() {
   const navigate = useNavigate();
@@ -13,15 +13,15 @@ function CertificateGenerator() {
   const [className, setClassName] = useState('');
   const [district, setDistrict] = useState('');
   const [mobileNumber, setMobileNumber] = useState('');
-  const [photo, setPhoto] = useState(null);
-  const [preview, setPreview] = useState(null);
+  // const [photo, setPhoto] = useState(null);
+  // const [preview, setPreview] = useState(null);
   const [isGenerating, setIsGenerating] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
-  const [isDragOver, setIsDragOver] = useState(false);
-  const fileInputRef = useRef(null);
-  const [showCropModal, setShowCropModal] = useState(false);
-  const [rawImage, setRawImage] = useState(null);
+  // const [isDragOver, setIsDragOver] = useState(false);
+  // const fileInputRef = useRef(null);
+  // const [showCropModal, setShowCropModal] = useState(false);
+  // const [rawImage, setRawImage] = useState(null);
   
   // Kerala districts with Kochi City
   const keralaDistricts = [
@@ -97,92 +97,92 @@ function CertificateGenerator() {
     }
   };
 
-  const handlePhotoChange = (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
-    if (!file.type.match('image.*')) {
-      setError('Please upload an image file (JPEG, PNG)');
-      return;
-    }
-    if (file.size > 2 * 1024 * 1024) {
-      setError('Image size should be less than 2MB');
-      return;
-    }
-    setError('');
-    const reader = new FileReader();
-    reader.onloadend = () => {
-      setRawImage(reader.result);
-      setShowCropModal(true);
-    };
-    reader.readAsDataURL(file);
-  };
+  // const handlePhotoChange = (e) => {
+  //   const file = e.target.files[0];
+  //   if (!file) return;
+  //   if (!file.type.match('image.*')) {
+  //     setError('Please upload an image file (JPEG, PNG)');
+  //     return;
+  //   }
+  //   if (file.size > 2 * 1024 * 1024) {
+  //     setError('Image size should be less than 2MB');
+  //     return;
+  //   }
+  //   setError('');
+  //   const reader = new FileReader();
+  //   reader.onloadend = () => {
+  //     setRawImage(reader.result);
+  //     setShowCropModal(true);
+  //   };
+  //   reader.readAsDataURL(file);
+  // };
 
-  const handleCropApply = (croppedDataUrl) => {
-    setPreview(croppedDataUrl);
-    setPhoto(dataURLtoFile(croppedDataUrl, 'cropped_photo.png'));
-    setShowCropModal(false);
-    setRawImage(null);
-  };
+  // const handleCropApply = (croppedDataUrl) => {
+  //   setPreview(croppedDataUrl);
+  //   setPhoto(dataURLtoFile(croppedDataUrl, 'cropped_photo.png'));
+  //   setShowCropModal(false);
+  //   setRawImage(null);
+  // };
 
-  const handleCropCancel = () => {
-    setShowCropModal(false);
-    setRawImage(null);
-    setPhoto(null);
-    setPreview(null);
-    if (fileInputRef.current) fileInputRef.current.value = '';
-  };
+  // const handleCropCancel = () => {
+  //   setShowCropModal(false);
+  //   setRawImage(null);
+  //   setPhoto(null);
+  //   setPreview(null);
+  //   if (fileInputRef.current) fileInputRef.current.value = '';
+  // };
 
-  // Helper to convert dataURL to File
-  function dataURLtoFile(dataurl, filename) {
-    const arr = dataurl.split(','), mime = arr[0].match(/:(.*?);/)[1], bstr = atob(arr[1]), n = bstr.length, u8arr = new Uint8Array(n);
-    for (let i = 0; i < n; i++) u8arr[i] = bstr.charCodeAt(i);
-    return new File([u8arr], filename, { type: mime });
-  }
+  // // Helper to convert dataURL to File
+  // function dataURLtoFile(dataurl, filename) {
+  //   const arr = dataurl.split(','), mime = arr[0].match(/:(.*?);/)[1], bstr = atob(arr[1]), n = bstr.length, u8arr = new Uint8Array(n);
+  //   for (let i = 0; i < n; i++) u8arr[i] = bstr.charCodeAt(i);
+  //   return new File([u8arr], filename, { type: mime });
+  // }
 
-  const handleDragOver = (e) => {
-    e.preventDefault();
-    setIsDragOver(true);
-  };
+  // const handleDragOver = (e) => {
+  //   e.preventDefault();
+  //   setIsDragOver(true);
+  // };
 
-  const handleDragLeave = (e) => {
-    e.preventDefault();
-    setIsDragOver(false);
-  };
+  // const handleDragLeave = (e) => {
+  //   e.preventDefault();
+  //   setIsDragOver(false);
+  // };
 
-  const handleDrop = (e) => {
-    e.preventDefault();
-    setIsDragOver(false);
-    const file = e.dataTransfer.files[0];
-    processFile(file);
-  };
+  // const handleDrop = (e) => {
+  //   e.preventDefault();
+  //   setIsDragOver(false);
+  //   const file = e.dataTransfer.files[0];
+  //   processFile(file);
+  // };
 
   const validateName = (name) => {
     // Regular expression that checks for any digits (0-9)
     return !/\d/.test(name);
   };
 
-  const processFile = (file) => {
-    if (!file) return;
+  // const processFile = (file) => {
+  //   if (!file) return;
 
-    if (!file.type.match('image.*')) {
-      setError('Please upload an image file (JPEG, PNG)');
-      return;
-    }
-    if (file.size > 2 * 1024 * 1024) {
-      setError('Image size should be less than 2MB');
-      return;
-    }
+  //   if (!file.type.match('image.*')) {
+  //     setError('Please upload an image file (JPEG, PNG)');
+  //     return;
+  //   }
+  //   if (file.size > 2 * 1024 * 1024) {
+  //     setError('Image size should be less than 2MB');
+  //     return;
+  //   }
 
-    setError('');
-    setPhoto(file);
+  //   setError('');
+  //   setPhoto(file);
 
-    // Create preview
-    const reader = new FileReader();
-    reader.onloadend = () => {
-      setPreview(reader.result);
-    };
-    reader.readAsDataURL(file);
-  };
+  //   // Create preview
+  //   const reader = new FileReader();
+  //   reader.onloadend = () => {
+  //     setPreview(reader.result);
+  //   };
+  //   reader.readAsDataURL(file);
+  // };
 
   const handleGenerateCertificate = async () => {
 
@@ -228,10 +228,11 @@ function CertificateGenerator() {
       return;
     }
 
-    if (!photo) {
-      setError('Please upload a photo');
-      return;
-    }
+    // Photo upload is disabled - template doesn't include photo field
+    // if (!photo) {
+    //   setError('Please upload a photo');
+    //   return;
+    // }
 
     setIsGenerating(true);
     setError('');
@@ -247,9 +248,10 @@ function CertificateGenerator() {
       formData.append('className', className);
       formData.append('district', district);
       formData.append('mobileNumber', mobileNumber);
-      if (photo) {
-        formData.append('photo', photo);
-      }
+      // Photo upload disabled - template doesn't include photo field
+      // if (photo) {
+      //   formData.append('photo', photo);
+      // }
       
       const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
       const response = await fetch(`${API_BASE_URL}/certificates/generate-certificate`, {
@@ -283,8 +285,8 @@ function CertificateGenerator() {
         setClassName('');
         setDistrict('');
         setMobileNumber('');
-        setPhoto(null);
-        setPreview(null);
+        // setPhoto(null);
+        // setPreview(null);
       }, 2000);
 
     } catch (err) {
@@ -296,13 +298,13 @@ function CertificateGenerator() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-50 to-blue-50 py-8 px-4">
-      <div className="max-w-4xl mx-auto">
+    <div className="min-h-screen bg-gradient-to-br from-green-50 to-blue-50 py-4 px-4">
+      <div className="max-w-3xl mx-auto">
         {/* Header Section */}
-        <div className="text-center mb-8">
-          <div className="mb-4">
+        <div className="text-center mb-4">
+          <div className="mb-3">
             {/* Logo */}
-            <div className="w-24 h-24 mx-auto mb-4">
+            <div className="w-28 h-28 mx-auto mb-3">
               <img 
                 src={logo} 
                 alt="Malarvadi Little Scholar Logo" 
@@ -313,10 +315,10 @@ function CertificateGenerator() {
           <h1 className="text-3xl font-bold text-green-800 mb-2">
             Malarvadi Little Scholar
           </h1>
-          <p className="text-lg text-gray-600 mb-4">
+          <p className="text-base text-gray-600 mb-2">
             Welcome to Malarvadi Little Scholar Certificate Portal
           </p>
-          <p className="text-md text-gray-500">
+          <p className="text-sm text-gray-500">
             Download your participation certificate
           </p>
         </div>
@@ -326,18 +328,18 @@ function CertificateGenerator() {
           {/* Close Button */}
           <button
             onClick={() => navigate('/')}
-            className="absolute top-4 right-4 w-8 h-8 bg-gray-100 hover:bg-gray-200 text-gray-600 hover:text-gray-800 rounded-full flex items-center justify-center transition-colors duration-200 z-10"
+            className="absolute top-2 right-2 w-6 h-6 bg-gray-100 hover:bg-gray-200 text-gray-600 hover:text-gray-800 rounded-full flex items-center justify-center transition-colors duration-200 z-10"
             title="Return to Home"
           >
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
             </svg>
           </button>
 
-          <div className="p-8">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          <div className="p-6">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               {/* Left Column */}
-              <div className="space-y-6">
+              <div className="space-y-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     Full Name <span className="text-red-500">*</span>
@@ -364,11 +366,9 @@ function CertificateGenerator() {
                     type="text"
                     value={place}
                     onChange={(e) => {
-                      const value = e.target.value;
-                      // Only allow letters (A-Z, a-z) and spaces
-                      if (/^[a-zA-Z\s]*$/.test(value)) {
-                        setPlace(value);
-                      }
+                      // Convert to uppercase and remove numbers
+                      const value = e.target.value.toUpperCase().replace(/[0-9]/g, '');
+                      setPlace(value);
                     }}
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
                     placeholder="Enter your place (e.g., Kottayam)"
@@ -384,55 +384,18 @@ function CertificateGenerator() {
                     type="text"
                     value={school}
                     onChange={(e) => {
-                      const value = e.target.value;
-                      // Only allow letters (A-Z, a-z) and spaces
-                      if (/^[a-zA-Z\s]*$/.test(value)) {
-                        setSchool(value);
-                      }
+                      // Convert to uppercase and remove numbers
+                      const value = e.target.value.toUpperCase().replace(/[0-9]/g, '');
+                      setSchool(value);
                     }}
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
                     placeholder="Enter your school/institution name"
                   />
                 </div>
-
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Age <span className="text-red-500">*</span>
-                    </label>
-                    <input
-                      type="number"
-                      value={age}
-                      onChange={handleAgeChange}
-                      onBlur={handleAgeBlur}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
-                      placeholder="Age (5-12)"
-                      min="5"
-                      max="12"
-                      required
-                    />
-                  </div>
-                  
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Gender <span className="text-red-500">*</span>
-                    </label>
-                    <select
-                      value={gender}
-                      onChange={(e) => setGender(e.target.value)}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
-                      required
-                    >
-                      <option value="">Select Gender</option>
-                      <option value="male">Boy</option>
-                      <option value="female">Girl</option>
-                    </select>
-                  </div>
-                </div>
               </div>
 
               {/* Right Column */}
-              <div className="space-y-6">
+              <div className="space-y-4">
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -486,66 +449,56 @@ function CertificateGenerator() {
                     maxLength="10"
                     required
                   />
-                  <p className="text-xs text-gray-500 mt-1">Enter 10-digit number starting with 6-9</p>
                 </div>
 
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Upload Photo <span className="text-red-500">*</span>
-                  </label>
-                  <div
-                    className={`border-2 border-dashed rounded-lg p-6 text-center transition-colors ${
-                      isDragOver 
-                        ? 'border-green-500 bg-green-50' 
-                        : 'border-gray-300 hover:border-green-400'
-                    }`}
-                    onDragOver={handleDragOver}
-                    onDragLeave={handleDragLeave}
-                    onDrop={handleDrop}
-                  >
+                <div className="grid grid-cols-2 gap-5">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Age <span className="text-red-500">*</span>
+                    </label>
                     <input
-                      type="file"
-                      ref={fileInputRef}
-                      onChange={handlePhotoChange}
-                      accept="image/*"
-                      className="hidden"
+                      type="number"
+                      value={age}
+                      onChange={handleAgeChange}
+                      onBlur={handleAgeBlur}
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                      placeholder="Age (5-12)"
+                      min="5"
+                      max="12"
+                      required
                     />
-                    
-                    {preview ? (
-                      <div className="space-y-4">
-                        <div className="w-24 h-24 mx-auto rounded-full overflow-hidden border-4 border-green-500">
-                          <img
-                            src={preview}
-                            alt="Preview"
-                            className="w-full h-full object-cover"
-                          />
-                        </div>
-                        <button
-                          onClick={() => fileInputRef.current.click()}
-                          className="text-green-600 hover:text-green-700 font-medium"
-                        >
-                          Change Photo
-                        </button>
-                      </div>
-                    ) : (
-                      <div className="space-y-4">
-                        <svg className="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48">
-                          <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" />
-                        </svg>
-                        <div>
-                          <button
-                            onClick={() => fileInputRef.current.click()}
-                            className="text-green-600 hover:text-green-700 font-medium"
-                          >
-                            Click to upload
-                          </button>
-                          <span className="text-gray-500"> or drag and drop</span>
-                        </div>
-                        <p className="text-xs text-gray-500">
-                          PNG, JPG up to 2MB
-                        </p>
-                      </div>
-                    )}
+                  </div>
+                  
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Gender <span className="text-red-500">*</span>
+                    </label>
+                    <div className="flex space-x-6">
+                      <label className="flex items-center">
+                        <input
+                          type="radio"
+                          name="gender"
+                          value="male"
+                          checked={gender === 'male'}
+                          onChange={(e) => setGender(e.target.value)}
+                          className="w-5 h-5 text-green-600 bg-gray-100 border-gray-300 focus:ring-0 checked:bg-green-600 checked:border-green-600"
+                          required
+                        />
+                        <span className="ml-3 text-base font-medium text-gray-700">Boy</span>
+                      </label>
+                      <label className="flex items-center">
+                        <input
+                          type="radio"
+                          name="gender"
+                          value="female"
+                          checked={gender === 'female'}
+                          onChange={(e) => setGender(e.target.value)}
+                          className="w-5 h-5 text-green-600 bg-gray-100 border-gray-300 focus:ring-0 checked:bg-green-600 checked:border-green-600"
+                          required
+                        />
+                        <span className="ml-3 text-base font-medium text-gray-700">Girl</span>
+                      </label>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -571,12 +524,12 @@ function CertificateGenerator() {
             )}
 
             {/* Generate Button */}
-            <div className="mt-8">
+            <div className="mt-6">
               <button
                 onClick={handleGenerateCertificate}
-                disabled={isGenerating || !name.trim() || !place.trim() || !age || !gender || !className.trim() || !district.trim() || !mobileNumber.trim() || !photo}
-                className={`w-full py-4 px-6 rounded-lg text-white font-medium text-lg transition-all duration-200 ${
-                  isGenerating || !name.trim() || !place.trim() || !age || !gender || !className.trim() || !district.trim() || !mobileNumber.trim() || !photo
+                disabled={isGenerating || !name.trim() || !place.trim() || !age || !gender || !className.trim() || !district.trim() || !mobileNumber.trim()}
+                className={`w-full py-3 px-6 rounded-lg text-white font-medium text-base transition-all duration-200 ${
+                  isGenerating || !name.trim() || !place.trim() || !age || !gender || !className.trim() || !district.trim() || !mobileNumber.trim()
                     ? 'bg-green-400 cursor-not-allowed'
                     : 'bg-green-600 hover:bg-green-700 transform hover:scale-105'
                 }`}
@@ -596,8 +549,8 @@ function CertificateGenerator() {
               </button>
             </div>
 
-            <p className="text-center text-sm text-gray-500 mt-4">
-              Your certificate will be generated with the Malarvadi Little Scholar 2025 template
+            <p className="text-center text-xs text-gray-500 mt-3">
+              Your certificate will be generated with the Malarvadi Little Scholar 2025 
             </p>
 
             {/* Return to Home Button 
@@ -615,13 +568,13 @@ function CertificateGenerator() {
           </div>
         </div>
       </div>
-      {/* Crop Modal */}
-      <CircularCropModal
+      {/* Crop Modal - commented out since photo upload is disabled */}
+      {/* <CircularCropModal
         open={showCropModal}
         imageSrc={rawImage}
         onApply={handleCropApply}
         onCancel={handleCropCancel}
-      />
+      /> */}
     </div>
   );
 }
